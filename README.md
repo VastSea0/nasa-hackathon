@@ -19,7 +19,11 @@ pip install -r requirements.txt
 ## Çalıştırma
 
 ```bash
-# Ana uygulamayı çalıştır (modüler)
+# Web uygulaması (önerilen)
+python server.py
+# Tarayıcıda: http://localhost:5000
+
+# Komut satırı uygulaması (modüler)
 python app.py
 
 # Veya eski monolitik versiyon

@@ -8,7 +8,7 @@ Original file is located at
 """
 
 # Kütüphaneler ve temel setup
-!pip install earthaccess xarray cartopy matplotlib numpy
+# !pip install earthaccess xarray cartopy matplotlib numpy
 
 import os
 import sys

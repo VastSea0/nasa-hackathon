@@ -1,0 +1,7 @@
+earthaccess
+xarray
+cartopy
+matplotlib
+numpy
+google-genai
+flask

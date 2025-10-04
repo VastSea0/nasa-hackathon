@@ -42,6 +42,22 @@ def login_earthaccess():
         print(f"[ERROR] EarthAccess login hatası: {e}")
         return False
 
+def login_earthaccess_with_credentials(username, password):
+    """EarthAccess'e kullanıcı adı ve şifre ile giriş yap"""
+    try:
+        # Set environment variables for earthaccess
+        import os
+        os.environ['EARTHDATA_USERNAME'] = username
+        os.environ['EARTHDATA_PASSWORD'] = password
+        
+        # Try to login with provided credentials
+        earthaccess.login()
+        print("[INFO] EarthAccess login başarılı (credentials)")
+        return True
+    except Exception as e:
+        print(f"[ERROR] EarthAccess credentials login hatası: {e}")
+        return False
+
 def search_and_open(short_name, dates=DATES, bbox=BBOX, fail_on_empty=True):
     """NASA veri setini ara ve aç"""
     print(f"[INFO] Searching {short_name} for {dates} @ bbox={bbox} ...")

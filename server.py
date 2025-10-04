@@ -15,7 +15,7 @@ import traceback
 
 # Kendi modüllerimizi import et
 from weather_utils import (
-    ensure_output_dir, login_earthaccess, fetch_weather_data, 
+    ensure_output_dir, login_earthaccess, login_earthaccess_with_credentials, fetch_weather_data, 
     extract_variables, process_variables, create_summary
 )
 from plotting_utils import plot_weather_map, create_quick_plot
@@ -48,14 +48,33 @@ def api_login():
     global earthaccess_logged_in
     
     try:
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({
+                'success': False,
+                'message': 'Kullanıcı adı ve şifre gerekli'
+            }), 400
+        
         ensure_output_dir()
-        success = login_earthaccess()
+        
+        # EarthAccess login with credentials
+        success = login_earthaccess_with_credentials(username, password)
         earthaccess_logged_in = success
         
-        return jsonify({
-            'success': success,
-            'message': 'EarthAccess login başarılı' if success else 'Login başarısız'
-        })
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'EarthAccess login başarılı'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Kullanıcı adı veya şifre hatalı'
+            })
+            
     except Exception as e:
         return jsonify({
             'success': False,

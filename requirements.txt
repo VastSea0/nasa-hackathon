@@ -5,3 +5,5 @@ matplotlib
 numpy
 google-genai
 flask
+h5netcdf
+netcdf4

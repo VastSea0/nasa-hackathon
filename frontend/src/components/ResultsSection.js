@@ -2,13 +2,25 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import AIAnalysisDisplay from './AIAnalysisDisplay';
 
 export default function ResultsSection({ results }) {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageErrors, setImageErrors] = useState({});
 
   if (!results) return null;
 
   const { summary, ai_analysis } = results;
+
+  const handleImageError = (imagePath) => {
+    console.error('Image load error for:', imagePath);
+    setImageErrors(prev => ({ ...prev, [imagePath]: true }));
+  };
+
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    return `${window.location.protocol}//${window.location.hostname}:5000/api/files/${path}`;
+  };
 
   const summaryItems = [
     {
@@ -93,23 +105,38 @@ export default function ResultsSection({ results }) {
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Comprehensive Weather Map
               </h4>
-              <div 
-                className="relative rounded-xl overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-xl"
-                onClick={() => setSelectedImage(summary.map_path)}
-              >
-                <img
-                  src={summary.map_path}
-                  alt="Weather Map"
-                  className="w-full h-auto"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
-                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                    </svg>
+              {imageErrors[summary.map_path] ? (
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-8 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Resim yüklenemedi
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    {summary.map_path}
+                  </p>
+                </div>
+              ) : (
+                <div 
+                  className="relative rounded-xl overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-xl"
+                  onClick={() => setSelectedImage(getImageUrl(summary.map_path))}
+                >
+                  <img
+                    src={getImageUrl(summary.map_path)}
+                    alt="Weather Map"
+                    className="w-full h-auto"
+                    onError={() => handleImageError(summary.map_path)}
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
+                    <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -118,23 +145,38 @@ export default function ResultsSection({ results }) {
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Quick Analysis View
               </h4>
-              <div 
-                className="relative rounded-xl overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-xl"
-                onClick={() => setSelectedImage(summary.quick_plot_path)}
-              >
-                <img
-                  src={summary.quick_plot_path}
-                  alt="Quick Plot"
-                  className="w-full h-auto"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
-                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                    </svg>
+              {imageErrors[summary.quick_plot_path] ? (
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-xl p-8 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Resim yüklenemedi
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    {summary.quick_plot_path}
+                  </p>
+                </div>
+              ) : (
+                <div 
+                  className="relative rounded-xl overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-xl"
+                  onClick={() => setSelectedImage(getImageUrl(summary.quick_plot_path))}
+                >
+                  <img
+                    src={getImageUrl(summary.quick_plot_path)}
+                    alt="Quick Plot"
+                    className="w-full h-auto"
+                    onError={() => handleImageError(summary.quick_plot_path)}
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
+                    <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -142,27 +184,7 @@ export default function ResultsSection({ results }) {
 
       {/* AI Analysis */}
       {ai_analysis && (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-xl">🤖</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                AI Analysis & Insights
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Generated by Google Gemini AI
-              </p>
-            </div>
-          </div>
-          
-          <div className="prose prose-sm max-w-none dark:prose-invert">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans">
-              {ai_analysis}
-            </pre>
-          </div>
-        </div>
+        <AIAnalysisDisplay aiAnalysis={ai_analysis} />
       )}
 
       {/* Image Modal */}

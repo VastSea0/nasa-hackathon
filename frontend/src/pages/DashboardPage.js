@@ -35,9 +35,16 @@ export default function DashboardPage() {
 
   const quickActions = [
     {
-      title: 'New Analysis',
-      description: 'Start weather data analysis',
-      icon: '📊',
+      title: 'Personalized Prediction',
+      description: 'Future weather tailored to you',
+      icon: '�',
+      color: 'from-violet-500 to-purple-600',
+      action: () => router.push('/prediction?demo=true')
+    },
+    {
+      title: 'Historical Analysis',
+      description: 'Analyze past weather data',
+      icon: '�',
       color: 'from-blue-500 to-indigo-600',
       action: () => router.push('/analysis')
     },
@@ -49,15 +56,8 @@ export default function DashboardPage() {
       action: () => router.push('/history')
     },
     {
-      title: 'AI Insights',
-      description: 'Latest AI recommendations',
-      icon: '🤖',
-      color: 'from-purple-500 to-pink-600',
-      action: () => router.push('/insights')
-    },
-    {
       title: 'Settings',
-      description: 'Account and preferences',
+      description: 'Update your preferences',
       icon: '⚙️',
       color: 'from-slate-500 to-slate-600',
       action: () => router.push('/settings')

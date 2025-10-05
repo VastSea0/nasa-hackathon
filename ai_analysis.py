@@ -19,7 +19,7 @@ def get_api_key():
     """API anahtarını al (environment variable'dan)"""
     return os.getenv('GEMINI_API_KEY', None)
 
-def call_gemini_analysis(analysis_dict, model_name="gemini-2.0-flash-exp", thinking_budget=0):
+def call_gemini_analysis(analysis_dict, model_name="gemini-2.0-flash-exp", thinking_budget=0, custom_prompt=None):
     """Gemini ile hava durumu analizi yap"""
     if genai is None or types is None:
         print("[WARN] google-genai not installed/importable. Skipping Gemini call.")
@@ -34,8 +34,19 @@ def call_gemini_analysis(analysis_dict, model_name="gemini-2.0-flash-exp", think
     try:
         client = genai.Client(api_key=api_key)
         
-        # Türkçe prompt
-        user_text = f"""
+        # Use custom prompt if provided, otherwise use default Turkish prompt
+        if custom_prompt:
+            user_text = f"""
+{custom_prompt}
+
+Weather Data for Analysis:
+{json.dumps(analysis_dict, indent=2, ensure_ascii=False)}
+
+Please provide your analysis based on the above context and data.
+"""
+        else:
+            # Türkçe prompt (default)
+            user_text = f"""
 Türkiye bölgesi için hava durumu analizi:
 Tarih Aralığı: {analysis_dict.get('dates')}
 Bölge: {analysis_dict.get('bbox')} (lat/lon)
